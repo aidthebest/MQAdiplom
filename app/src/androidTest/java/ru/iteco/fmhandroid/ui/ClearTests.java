@@ -53,11 +53,24 @@ import ru.iteco.fmhandroid.R;
 @RunWith(AndroidJUnit4.class)
 public class ClearTests {
 
+
+
     ViewInteraction  maiMenuImageButton = onView(
             allOf(withId(R.id.main_menu_image_button)));
 
     ViewInteraction claimsButton = onView(
             allOf(withId(android.R.id.title), withText("Claims")));
+
+    ViewInteraction newsButton = onView(
+            allOf(withId(android.R.id.title), withText("News")));
+
+    ViewInteraction mainsButton = onView(
+            allOf(withId(android.R.id.title), withText("Main")));
+
+    ViewInteraction aboutButton = onView(
+            allOf(withId(android.R.id.title), withText("About")));
+
+    ViewInteraction backFromAboutScreenButton = onView(withId(R.id.about_back_image_button));
 
 
     @Rule
@@ -129,10 +142,21 @@ public class ClearTests {
 
 
     @Test
-    public void logoutLogInTest() {
-        SystemClock.sleep(4000);
-        System.out.println("success??                                           ?");
-        SystemClock.sleep(4000);
+    public void buttonsCheckTest() {
+        SystemClock.sleep(2000);
+        maiMenuImageButton.perform(click());
+        aboutButton.perform(click());
+        backFromAboutScreenButton.perform(click());
+        SystemClock.sleep(2000);
+        maiMenuImageButton.perform(click());
+        newsButton.perform(click());
+        SystemClock.sleep(2000);
+        maiMenuImageButton.perform(click());
+        claimsButton.perform(click());
+        SystemClock.sleep(2000);
+        maiMenuImageButton.perform(click());
+        mainsButton.perform(click());
+        SystemClock.sleep(2000);
     }
 
     //    @Test
