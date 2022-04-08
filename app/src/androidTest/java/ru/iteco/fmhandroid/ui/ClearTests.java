@@ -13,6 +13,8 @@ import static androidx.test.espresso.matcher.RootMatchers.withDecorView;
 import static androidx.test.espresso.matcher.ViewMatchers.isClickable;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.isEnabled;
+import static androidx.test.espresso.matcher.ViewMatchers.isNotChecked;
+import static androidx.test.espresso.matcher.ViewMatchers.isNotEnabled;
 import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static androidx.test.espresso.matcher.ViewMatchers.withHint;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
@@ -51,6 +53,13 @@ import ru.iteco.fmhandroid.R;
 @RunWith(AndroidJUnit4.class)
 public class ClearTests {
 
+    ViewInteraction  maiMenuImageButton = onView(
+            allOf(withId(R.id.main_menu_image_button)));
+
+    ViewInteraction claimsButton = onView(
+            allOf(withId(android.R.id.title), withText("Claims")));
+
+
     @Rule
     public ActivityTestRule<AppActivity> mActivityTestRule = new ActivityTestRule<>(AppActivity.class);
 
@@ -75,7 +84,7 @@ public class ClearTests {
 
     @Before
     public void logIn() {
-        SystemClock.sleep(4000);
+        SystemClock.sleep(2000);
         ViewInteraction login = onView(
                 allOf(withHint("Login"), withParent(withParent(withId(R.id.login_text_input_layout)))));
 
@@ -95,13 +104,12 @@ public class ClearTests {
 
     @After
     public void logOut() {
+        SystemClock.sleep(1000);
         ViewInteraction logOutButton1 = onView(
                 allOf(withId(R.id.authorization_image_button), withContentDescription("Authorization")));
 
         logOutButton1.perform(click());
-        SystemClock.sleep(4000);
-
-
+        SystemClock.sleep(1000);
         ViewInteraction materialTextView = onView(
                 allOf(withId(android.R.id.title), withText("Log out")));
 
@@ -111,13 +119,14 @@ public class ClearTests {
 
 
     @Test
-    public void maiMenuImageButtonClickTest () {
-        SystemClock.sleep(4000);
-        ViewInteraction logOutButton1 = onView(
-                allOf(withId(R.id.main_menu_image_button)));
-        logOutButton1.perform(click());
-//        SystemClock.sleep(4000);
+    public void goToClaimsFromMainButtonClick () {
+        SystemClock.sleep(1000);
+        maiMenuImageButton.perform(click());
+        claimsButton.perform(click());
+        onView(withId(R.id.add_new_claim_material_button)).check(matches(isEnabled()));
     }
+
+
 
     @Test
     public void logoutLogInTest() {
