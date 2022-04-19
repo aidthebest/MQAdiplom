@@ -10,6 +10,7 @@ import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 //import static androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition;
 import static androidx.test.espresso.matcher.RootMatchers.withDecorView;
+import static androidx.test.espresso.matcher.ViewMatchers.isChecked;
 import static androidx.test.espresso.matcher.ViewMatchers.isClickable;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.isEnabled;
@@ -72,6 +73,10 @@ public class ClearTests {
 
     ViewInteraction backFromAboutScreenButton = onView(withId(R.id.about_back_image_button));
 
+    ViewInteraction claimsFiltrerButton = onView((withId(R.id.filters_material_button)));
+
+    ViewInteraction createClaimButton = onView(withId(R.id.add_new_claim_material_button));
+
 
     @Rule
     public ActivityTestRule<AppActivity> mActivityTestRule = new ActivityTestRule<>(AppActivity.class);
@@ -129,7 +134,10 @@ public class ClearTests {
         materialTextView.perform(click());
     }
 
+    @Test
+    public void launchTest() {
 
+    }
 
     @Test
     public void goToClaimsFromMainButtonClick () {
@@ -159,26 +167,45 @@ public class ClearTests {
         SystemClock.sleep(2000);
     }
 
-    //    @Test
-//    public void signInVisible() {
-//        SystemClock.sleep(8000);
-//        ViewInteraction textView = onView(
-//                allOf(withText("Authorization"),
-//                        withParent(withParent(withId(R.id.nav_host_fragment)))));
-//        textView.check(matches(isDisplayed()));
-//        ViewInteraction editText = onView(
-//                allOf(withHint("Login")));
-//        editText.check(matches(isEnabled()));
-//
-//        ViewInteraction editText2 = onView(
-//                allOf(withHint("Password"),
-//                        withParent(withParent(withId(R.id.password_text_input_layout)))));
-//        editText2.check(matches(isEnabled()));
-//
-//        ViewInteraction button = onView(
-//                allOf(withId(R.id.enter_button), withText("SIGN IN"), withContentDescription("Save"),
-//                        withParent(withParent(IsInstanceOf.<View>instanceOf(android.widget.RelativeLayout.class))),
-//                        isDisplayed()));
-//        button.check(matches(isClickable()));
-//    }
+    @Test
+    public void claimsFilteringConditionsCheck () {
+        SystemClock.sleep(2000);
+        maiMenuImageButton.perform(click());
+        SystemClock.sleep(2000);
+        claimsButton.perform(click());
+        SystemClock.sleep(2000);
+        claimsFiltrerButton.perform(click());
+        SystemClock.sleep(2000);
+        ViewInteraction isOpen = onView((withId(R.id.item_filter_open))).check(matches(isChecked()));
+        ViewInteraction inProgress = onView((withId(R.id.item_filter_in_progress))).check(matches(isChecked()));
+        ViewInteraction isExecuted = onView((withId(R.id.item_filter_executed))).check(matches(isNotChecked()));
+        ViewInteraction isCancelled = onView((withId(R.id.item_filter_cancelled))).check(matches(isNotChecked()));
+        isCancelled.perform(click());
+        ViewInteraction okButton = onView((withId(R.id.claim_list_filter_ok_material_button))).perform(click());
+        ViewInteraction claimsMainWindowCheck = onView(withText("Claims")).check(matches(isDisplayed()));
+        claimsMainWindowCheck.check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void createClaimTest () {
+        SystemClock.sleep(2000);
+        maiMenuImageButton.perform(click());
+        SystemClock.sleep(2000);
+        claimsButton.perform(click());
+        SystemClock.sleep(2000);
+        createClaimButton.perform(click());
+        SystemClock.sleep(2000);
+        ViewInteraction claimTitle = onView(withId(R.id.title_edit_text)).perform(replaceText("nice Title"));
+        onView(withId(R.id.executor_drop_menu_auto_complete_text_view)).perform(click());
+        SystemClock.sleep(2000);
+        onView(withId(R.id.executor_drop_menu_auto_complete_text_view)).perform(replaceText("Лебедев Данил Александрович"));
+        onView(withId(R.id.executor_drop_menu_auto_complete_text_view)).perform(click());
+        onView(withId(R.id.date_in_plan_text_input_edit_text)).perform(replaceText("25.04.2022"));
+        onView(withId(R.id.time_in_plan_text_input_edit_text)).perform(replaceText("00:00"));
+        onView(withId(R.id.description_edit_text)).perform(replaceText("nice sub"));
+        onView(withId(R.id.description_edit_text)).perform(closeSoftKeyboard());
+        onView(withId(R.id.save_button)).perform(click());
+        SystemClock.sleep(2000);
+        ViewInteraction claimsMainWindowCheck = onView(withText("Claims")).check(matches(isDisplayed()));
+    }
 }
