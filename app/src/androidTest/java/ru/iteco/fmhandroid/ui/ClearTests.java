@@ -87,7 +87,13 @@ public class ClearTests {
     ViewInteraction aboutButton = onView(
             allOf(withId(android.R.id.title), withText("About")));
 
+    ViewInteraction logoMain = onView(withId(R.id.trademark_image_view));
+
+    ViewInteraction ourMissionButton = onView(withId(R.id.our_mission_image_button));
+
     ViewInteraction backFromAboutScreenButton = onView(withId(R.id.about_back_image_button));
+
+    ViewInteraction authorizationButton = onView(withId(R.id.authorization_image_button));
 
     ViewInteraction claimsFiltrerButton = onView((withId(R.id.filters_material_button)));
 
@@ -254,9 +260,35 @@ public class ClearTests {
         onView(withId(R.id.add_new_claim_material_button)).check(matches(isEnabled()));
     }
 
+    @Test
+    public void mainScreenElementsVisibility() {
+        SystemClock.sleep(2000);
+        maiMenuImageButton.check(matches(isClickable()));
+        maiMenuImageButton.check(matches(isDisplayed()));
+        maiMenuImageButton.perform(click());
+        SystemClock.sleep(2000);
+        mainsButton.check(matches(isDisplayed()));
+        claimsButton.check(matches(isDisplayed()));
+        newsButton.check(matches(isDisplayed()));
+        aboutButton.check(matches(isDisplayed()));
+        aboutButton.perform(click());
+        backFromAboutScreenButton.perform(click());
+        SystemClock.sleep(2000);
+        logoMain.check(matches(isDisplayed()));
+        ourMissionButton.check(matches(isDisplayed()));
+        authorizationButton.check(matches(isDisplayed()));
+        onView(withIndex(withId(R.id.expand_material_button), 0)).check(matches(isDisplayed()));
+        onView(withIndex(withId(R.id.expand_material_button), 1)).check(matches(isDisplayed()));
+        onView(withText("News")).check(matches(isDisplayed()));
+        onView(withText("ALL NEWS")).check(matches(isDisplayed()));
+        onView(withText("Claims")).check(matches(isDisplayed()));
+        onView(withText("ALL CLAIMS")).check(matches(isDisplayed()));
+        createClaimButton.check(matches(isDisplayed()));
+        SystemClock.sleep(2000);
+    }
 
     @Test
-    public void buttonsCheckTest() {
+    public void mainScreenElementsClickable() {
         SystemClock.sleep(2000);
         maiMenuImageButton.perform(click());
         aboutButton.perform(click());
@@ -270,7 +302,27 @@ public class ClearTests {
         SystemClock.sleep(2000);
         maiMenuImageButton.perform(click());
         mainsButton.perform(click());
+
         SystemClock.sleep(2000);
+        onView(withIndex(withId(R.id.expand_material_button), 0)).perform(click());
+        SystemClock.sleep(2000);
+        onView(withIndex(withId(R.id.expand_material_button), 0)).perform(click());
+        SystemClock.sleep(2000);
+        onView(withIndex(withId(R.id.expand_material_button), 1)).perform(click());
+        SystemClock.sleep(2000);
+        onView(withIndex(withId(R.id.expand_material_button), 1)).perform(click());
+        SystemClock.sleep(2000);
+
+        onView(withText("ALL NEWS")).perform(click());
+        maiMenuImageButton.perform(click());
+        mainsButton.perform(click());
+        onView(withText("ALL CLAIMS")).perform(click());
+        maiMenuImageButton.perform(click());
+        mainsButton.perform(click());
+        createClaimButton.perform(click());
+        SystemClock.sleep(2000);
+        onView(withText("Cancel")).perform(click());
+        onView(withText("OK")).perform(click());
     }
 
     @Test
@@ -355,7 +407,7 @@ public class ClearTests {
         ViewInteraction claimsMainWindowCheck = onView(withText("Claims")).check(matches(isDisplayed()));
     }
 
-    @Test
+    @Test // не удается вставить в поле комментарий
     public void createClaimCommentTest() {
         this.goToClaimsScreen();
         onView(withIndex(withId(R.id.claim_bottom_divider_image_view), 1)).perform(click());
@@ -368,14 +420,19 @@ public class ClearTests {
         onView(withText("nice comment")).check(matches(isDisplayed()));
     }
 
-    @Test
+    @Test // не ловится "The field cannot be empty"
     public void createClaimEmptyCommentTest() {
         this.goToClaimsScreen();
         onView(withIndex(withId(R.id.claim_bottom_divider_image_view), 1)).perform(click());
         onView(withId(R.id.add_comment_image_button)).perform(scrollTo()).perform(click());
         SystemClock.sleep(2000);
         onView(withId(R.id.save_button)).perform(click());
+        SystemClock.sleep(2000);
         onView(withText("The field cannot be empty")).check(matches(isDisplayed()));
-        onView(withText("Cancel")).perform(click());
+        SystemClock.sleep(2000);
+        onView(withId(R.id.cancel_button)).perform(click());
+        SystemClock.sleep(2000);
     }
+
+
 }
