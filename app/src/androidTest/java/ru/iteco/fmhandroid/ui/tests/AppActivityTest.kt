@@ -1,4 +1,4 @@
-package ru.iteco.fmhandroid.ui
+package ru.iteco.fmhandroid.ui.tests
 
 
 import android.os.SystemClock
@@ -8,11 +8,10 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.filters.LargeTest
 import androidx.test.rule.ActivityTestRule
 import androidx.test.runner.AndroidJUnit4
-import org.hamcrest.Matchers.allOf
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import ru.iteco.fmhandroid.R
+import ru.iteco.fmhandroid.ui.AppActivity
 
 @LargeTest
 @RunWith(AndroidJUnit4::class)
