@@ -11,13 +11,13 @@ plugins {
 
 android {
     compileSdkVersion 32
-    buildToolsVersion "30.0.3"
+    buildToolsVersion '32.0.0'
 
     defaultConfig {
         applicationId "ru.iteco.fmhandroid"
         minSdkVersion 21
-        targetSdkVersion 32
         minSdk 26
+        targetSdkVersion 32
         versionCode 14
         versionName "1.0.0"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
@@ -40,18 +40,23 @@ android {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            buildConfigField "String", "BASE_URL", '"https://test.vhospice.org:8443/api/fmh/"'
+            buildConfigField "String", "BASE_URL", '"https://test.vhospice.org/api/fmh/"'
         }
         debug {
-            buildConfigField "String", "BASE_URL", '"https://test.vhospice.org:8443/api/fmh/"'
+            buildConfigField "String", "BASE_URL", '"https://test.vhospice.org/api/fmh/"'
         }
     }
 }
 
 dependencies {
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0-alpha05'
+    androidTestImplementation 'androidx.test.espresso:espresso-intents:3.4.0'
     androidTestImplementation 'androidx.test:rules:1.4.1-alpha05'
-    androidTestImplementation 'io.qameta.allure:allure-kotlin-android:2.0.0'
+    androidTestImplementation 'androidx.test:runner:1.4.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.5.0-alpha05'
+    androidTestImplementation 'io.qameta.allure:allure-kotlin-android:2.4.0'
     def retrofit_version = "2.9.0"
     def retrofit_gson_version = "2.9.0"
     def okhttp_logging_version = "4.9.2"
@@ -63,8 +68,8 @@ dependencies {
     def material_version = '1.5.0'
     def constraint_version = '2.1.3'
     def coroutines_version = '1.5.2'
-    def hilt_version = '2.40.5'
-    def gson_version = '2.8.9'
+    def hilt_version = '2.41'
+    def gson_version = '2.9.0'
     def swipe_refresh_version = '1.1.0'
 
     implementation 'androidx.core:core-ktx:1.7.0'
@@ -96,35 +101,4 @@ dependencies {
     implementation platform('com.google.firebase:firebase-bom:29.0.3')
     implementation 'com.google.firebase:firebase-analytics-ktx'
     implementation 'com.google.firebase:firebase-crashlytics-ktx'
-
-    implementation 'androidx.test.espresso:espresso-idling-resource:3.4.0'
-
-    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
-    testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test:rules:1.4.0'
-    androidTestImplementation 'androidx.test:runner:1.4.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-intents:3.4.0'
-
-    def core_version = "1.6.0"
-    def appcompat_version = "1.3.1"
-    implementation "androidx.core:core-ktx:$core_version"
-    implementation "androidx.appcompat:appcompat:$appcompat_version"
-
-    // Local tests dependencies
-    def junit_version = '4.13.2'
-    testImplementation "junit:junit:$junit_version"
-
-    // Testing-only dependencies
-    def test_core_version = "1.4.0"
-    def test_junit_version = "1.1.3"
-    androidTestImplementation "androidx.test:core-ktx:$test_core_version"
-    androidTestImplementation "androidx.test.ext:junit-ktx:$test_junit_version"
-    androidTestImplementation "androidx.test:runner:$test_core_version"
-
-    // UiAutomator Testing
-    def uiautomator_version = "2.2.0"
-    def hamcrest_version = "1.3"
-    androidTestImplementation "androidx.test.uiautomator:uiautomator:$uiautomator_version"
-    androidTestImplementation "org.hamcrest:hamcrest-integration:$hamcrest_version"
 }
