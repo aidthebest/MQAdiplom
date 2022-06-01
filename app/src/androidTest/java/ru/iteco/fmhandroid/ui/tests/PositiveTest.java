@@ -1,48 +1,42 @@
 package ru.iteco.fmhandroid.ui.tests;
 
+
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
-import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
-import static androidx.test.espresso.action.ViewActions.replaceText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
+import static androidx.test.espresso.matcher.ViewMatchers.withChild;
 import static androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility;
-import static androidx.test.espresso.matcher.ViewMatchers.withHint;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withParent;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
-
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static ru.iteco.fmhandroid.ui.utils.Utils.checkClaimStatus;
 import static ru.iteco.fmhandroid.ui.utils.Utils.getCurrentDate;
 import static ru.iteco.fmhandroid.ui.utils.Utils.getCurrentTime;
 import static ru.iteco.fmhandroid.ui.utils.Utils.isDisplayedWithSwipe;
 
 import android.os.SystemClock;
-import android.view.View;
+
+import java.util.NoSuchElementException;
 
 import androidx.test.espresso.NoMatchingViewException;
-import androidx.test.espresso.ViewInteraction;
+import androidx.test.rule.ActivityTestRule;
+
+import androidx.test.espresso.NoMatchingViewException;
 import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.rule.ActivityTestRule;
 
-import org.hamcrest.core.IsInstanceOf;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.NoSuchElementException;
-
 import io.qameta.allure.android.runners.AllureAndroidJUnit4;
 import io.qameta.allure.kotlin.junit4.DisplayName;
-import ru.iteco.fmhandroid.R;
 import ru.iteco.fmhandroid.ui.AppActivity;
-import ru.iteco.fmhandroid.ui.elements.CommentAddedScreen;
-import ru.iteco.fmhandroid.ui.elements.NewsScreen;
-import ru.iteco.fmhandroid.ui.elements.QuoteScreen;
 import ru.iteco.fmhandroid.ui.steps.AboutSteps;
 import ru.iteco.fmhandroid.ui.steps.AuthorizationSteps;
 import ru.iteco.fmhandroid.ui.steps.ClaimsSteps;
@@ -63,42 +57,11 @@ public class PositiveTest {
     AboutSteps AboutSteps = new AboutSteps();
     CreateClaimSteps CreateClaimSteps = new CreateClaimSteps();
 
+    String currentDate = getCurrentDate();
+    String currentTime = getCurrentTime();
+
     @Rule
     public ActivityTestRule<AppActivity> mActivityTestRule = new ActivityTestRule<>(AppActivity.class);
-
-//    @Before
-//    public void logIn() {
-//        SystemClock.sleep(4000);
-//        ViewInteraction login = onView(
-//                allOf(withHint("Login"), withParent(withParent(withId(R.id.login_text_input_layout)))));
-//
-//        login.perform(replaceText("login2"), closeSoftKeyboard());
-//
-//        ViewInteraction password = onView(
-//                allOf(withHint("Password"),
-//                        withParent(withParent(withId(R.id.password_text_input_layout)))));
-//        password.perform(replaceText("password2"), closeSoftKeyboard());
-//
-//        ViewInteraction signInButton = onView(
-//                allOf(withId(R.id.enter_button), withText("SIGN IN"), withContentDescription("Save"),
-//                        withParent(withParent(IsInstanceOf.<View>instanceOf(android.widget.RelativeLayout.class))),
-//                        isDisplayed()));
-//        signInButton.perform(click());
-//    }
-//
-//    @After
-//    public void logOut() {
-//        SystemClock.sleep(1000);
-//        ViewInteraction logOutButton1 = onView(
-//                allOf(withId(R.id.authorization_image_button), withContentDescription("Authorization")));
-//
-//        logOutButton1.perform(click());
-//        SystemClock.sleep(1000);
-//        ViewInteraction materialTextView = onView(
-//                allOf(withId(android.R.id.title), withText("Log out")));
-//
-//        materialTextView.perform(click());
-//    }
 
     @Before
     public void loginCheck() {
@@ -137,7 +100,7 @@ public class PositiveTest {
 
     @Test
     @DisplayName("Выход из приложения")
-    public void logOutTest () {
+    public void logOutTest() {
         CommonSteps.logout();
         AuthorizationSteps.isAuthorizationScreen();
     }
@@ -222,8 +185,7 @@ public class PositiveTest {
     public void createClaim() {
         String claimTitleString = "AM test " + getCurrentDate() + " O " + getCurrentTime();
         String newClaimTitleString = "tooooooLong " + getCurrentDate();
-        String currentDate = getCurrentDate();
-        String currentTime = getCurrentTime();
+
 
         MainSteps.createClaim();
         CreateClaimSteps.isCreateClaimsScreen();
@@ -233,7 +195,6 @@ public class PositiveTest {
         CreateClaimSteps.enterClaimTime(currentTime);
         CreateClaimSteps.enterClaimDescription(newClaimTitleString);
         CommonSteps.clickSave();
-        SystemClock.sleep(1000);
 
         //-------------------------------------
         // Поиск созданной жалобы - очень долго ищет но находит, пока выключил
@@ -246,33 +207,112 @@ public class PositiveTest {
 //        }
         //-------------------------------------
 
-//        MainSteps.createClaim();
-//        SystemClock.sleep(2000);
+    }
+
+    @Test
+    @DisplayName("Попытка создать претензию с пустыми полями")
+    public void tryTorCreateClaimWithEmptyField() {
+        MainSteps.createClaim();
+        CreateClaimSteps.isCreateClaimsScreen();
+        CommonSteps.clickSave();
+        CreateClaimSteps.checkToastEmptyFields();
+        SystemClock.sleep(2000);
+    }
+
+    @Test // должен падать странное поведение
+    @DisplayName("Попытка создать претензию с истекшим сроком выполнения")
+    public void tryTorCreateClaimInPastTime() {
+
+        String claimTitleString = "Past time " + getCurrentDate() + " O " + getCurrentTime();
+        String newClaimTitleString = "time is up " + getCurrentDate();
+
+        MainSteps.createClaim();
+        CreateClaimSteps.isCreateClaimsScreen();
+
+        CreateClaimSteps.enterClaimTitle(claimTitleString);
+        CreateClaimSteps.selectExecutor();
+
+        CreateClaimSteps.enterClaimDate(currentDate);
+        SystemClock.sleep(2000);
+        CreateClaimSteps.enterClaimDate("01.01.2022");
+        SystemClock.sleep(2000);
+        CreateClaimSteps.enterClaimTime(currentTime);
+        CreateClaimSteps.enterClaimDescription(newClaimTitleString);
+        CommonSteps.clickSave();
+        CreateClaimSteps.isCreateClaimsScreen();
+    }
+
+    @Test
+    @DisplayName("Создание претензии без указания Исполнителя")
+    public void createClaimWithoutExecutor() {
+        MainSteps.createClaim();
+        CreateClaimSteps.isCreateClaimsScreen();
+        CreateClaimSteps.enterClaimTitle("Without Executor test");
+        CreateClaimSteps.enterClaimDate(currentDate);
+        CreateClaimSteps.enterClaimTime(currentTime);
+        CreateClaimSteps.enterClaimDescription("some text");
+        CommonSteps.clickSave();
+        MainSteps.isMainScreen();
+
+        //-------------------------------------
+        // Поиск созданной жалобы - очень долго ищет но находит, пока выключил
+//        MainSteps.openAllClaims();
 //
-//        CreateClaimSteps.isCreateClaimsScreen();
-//        CreateClaimSteps.checkClaimTitleLength();
+//        if (isDisplayedWithSwipe(onView(withText("Without Executor test")), 2, true)) {
+//            onView(withText("Without Executor test")).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)));
+//        } else {
+//            throw new NoSuchElementException("Not found " + onView(withText("Without Executor test")).toString());
+//        }
+        //----
 
-//        CommonSteps.clickSave();
-//        CreateClaimSteps.checkToastEmptyFields();
-//        CommonSteps.clickOK();
+    }
 
-//        CreateClaimSteps.enterClaimTitle(claimTitleString);
-//        CreateClaimSteps.selectExecutor();
-//        CreateClaimSteps.enterClaimDate(currentDate);
-//        CreateClaimSteps.enterClaimTime(currentTime);
-//        CreateClaimSteps.enterClaimDescription(newClaimTitleString);
+    @Test
+    @DisplayName("Создание претензии с именем длиннее 50 символов")
+    public void createClaimWith51SymbolTitle() {
+        MainSteps.createClaim();
+        CreateClaimSteps.isCreateClaimsScreen();
+        CreateClaimSteps.enterClaimTitle("over 50 symbols tittle test 24 gfh fh ;'3k4 kt3l;gh51 and over");
+        CreateClaimSteps.enterClaimDate(currentDate);
+        CreateClaimSteps.enterClaimTime(currentTime);
+        CreateClaimSteps.enterClaimDescription("symbols tittle test");
+        CommonSteps.clickSave();
+        MainSteps.isMainScreen();
 
-//        CommonSteps.clickCancel();
-//        CommonSteps.clickCancelText();
-//        CreateClaimSteps.isCreateClaimsScreen();
+        //-------------------------------------
+        // Поиск созданной жалобы - очень долго ищет но находит, пока выключил
+//        MainSteps.openAllClaims();
+//
+//        if (isDisplayedWithSwipe(onView(withText("over 50 symbols tittle test 24 gfh fh ;'3k4 kt3l;g")), 2, true)) {
+//            onView(withText("over 50 symbols tittle test 24 gfh fh ;'3k4 kt3l;g")).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)));
+//        } else {
+//            throw new NoSuchElementException("Not found " + onView(withText("over 50 symbols tittle test 24 gfh fh ;'3k4 kt3l;g")).toString());
+//        }
+        //----
+    }
 
-//        CommonSteps.clickCancel();
-//        CommonSteps.clickOK();
-//        MainSteps.isMainScreen();
+    @Test
+    @DisplayName("Создание претензии с описанием длиннее 255 символов")
+    public void createClaimWithOver255SymbolsDesc() {
+        MainSteps.createClaim();
+        CreateClaimSteps.isCreateClaimsScreen();
+        CreateClaimSteps.enterClaimTitle("Description length test");
+        CreateClaimSteps.enterClaimDate(currentDate);
+        CreateClaimSteps.enterClaimTime(currentTime);
+        CreateClaimSteps.enterClaimDescription("#Zt+Jk5JLNjhGoR!№~t*2VR*x}v|e+oKohiYDAd[№.AKzu9w#gI%:|4mAV&2N0T-=$)[V3sI#G:aai?)&uDZXp!DjE1XhB$VxOaUVuQ@AzXCn.KQmbR%v;uy4m!tF#Us{LSv(&^{ST8EF8ia8}.!+mK2|qfY{yXq:!#Rr1b&}(iq=y;A#}Q):a6U%SgxG#fuA9#[j#$W^^Dzq|SF|Njdq3!H#Ohscun)a9~Dh6Y20fa3dqCf9B=k.Y]Qoq|s2iQH over 255");
+        CommonSteps.clickSave();
+        MainSteps.isMainScreen();
 
-
-
-
+        //-------------------------------------
+        // Поиск созданной жалобы - очень долго ищет но находит, пока выключил
+//        MainSteps.openAllClaims();
+//
+//        if (isDisplayedWithSwipe(onView(withText("over 50 symbols tittle test 24 gfh fh ;'3k4 kt3l;g")), 2, true)) {
+//            onView(withText("over 50 symbols tittle test 24 gfh fh ;'3k4 kt3l;g")).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)));
+//        } else {
+//            throw new NoSuchElementException("Not found " + onView(withText("over 50 symbols tittle test 24 gfh fh ;'3k4 kt3l;g")).toString());
+//        }
+        //----
     }
 
 }
