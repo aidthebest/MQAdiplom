@@ -45,6 +45,7 @@ import ru.iteco.fmhandroid.ui.steps.ClaimsSteps;
 import ru.iteco.fmhandroid.ui.steps.CommonSteps;
 import ru.iteco.fmhandroid.ui.steps.CreateClaimSteps;
 import ru.iteco.fmhandroid.ui.steps.MainSteps;
+import ru.iteco.fmhandroid.ui.steps.NewsControlPanelSteps;
 import ru.iteco.fmhandroid.ui.steps.NewsSteps;
 import ru.iteco.fmhandroid.ui.steps.QuoteSteps;
 import ru.iteco.fmhandroid.ui.steps.SingleClaimSteps;
@@ -61,9 +62,14 @@ public class PositiveTest {
     CreateClaimSteps CreateClaimSteps = new CreateClaimSteps();
     SingleClaimSteps SingleClaimSteps = new SingleClaimSteps();
     AddCommentSteps AddCommentSteps = new AddCommentSteps();
+    NewsControlPanelSteps NewsControlPanelSteps = new NewsControlPanelSteps();
 
     String currentDate = getCurrentDate();
     String currentTime = getCurrentTime();
+
+    public static String newsTitle = "start news title" + getCurrentDate() + " O " + getCurrentTime();
+    public static String newsDescription = "news screen testing" + getCurrentDate() + " O " + getCurrentTime();
+    public static String changeTitle = "another title" + getCurrentDate() +  " O " + getCurrentTime();
 
     @Rule
     public ActivityTestRule<AppActivity> mActivityTestRule = new ActivityTestRule<>(AppActivity.class);
@@ -346,6 +352,14 @@ public class PositiveTest {
         AddCommentSteps.isAddCommentScreen();
         AddCommentSteps.addComment();
         SingleClaimSteps.isSingleClaimScreen();
+    }
+
+    @Test
+    @DisplayName("Проверка открытия контрольной панели новостей")
+    public void controlPanelEnteringTest() {
+        CommonSteps.goToScreen("News");
+        NewsSteps.goToControlPanel();
+        NewsControlPanelSteps.isControlPanel();
     }
 }
 
