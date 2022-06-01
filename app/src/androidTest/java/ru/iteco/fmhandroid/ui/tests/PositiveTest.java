@@ -37,7 +37,9 @@ import org.junit.runner.RunWith;
 import io.qameta.allure.android.runners.AllureAndroidJUnit4;
 import io.qameta.allure.kotlin.junit4.DisplayName;
 import ru.iteco.fmhandroid.ui.AppActivity;
+import ru.iteco.fmhandroid.ui.elements.AddCommentScreen;
 import ru.iteco.fmhandroid.ui.steps.AboutSteps;
+import ru.iteco.fmhandroid.ui.steps.AddCommentSteps;
 import ru.iteco.fmhandroid.ui.steps.AuthorizationSteps;
 import ru.iteco.fmhandroid.ui.steps.ClaimsSteps;
 import ru.iteco.fmhandroid.ui.steps.CommonSteps;
@@ -45,6 +47,7 @@ import ru.iteco.fmhandroid.ui.steps.CreateClaimSteps;
 import ru.iteco.fmhandroid.ui.steps.MainSteps;
 import ru.iteco.fmhandroid.ui.steps.NewsSteps;
 import ru.iteco.fmhandroid.ui.steps.QuoteSteps;
+import ru.iteco.fmhandroid.ui.steps.SingleClaimSteps;
 
 @RunWith(AllureAndroidJUnit4.class)
 public class PositiveTest {
@@ -56,6 +59,8 @@ public class PositiveTest {
     NewsSteps NewsSteps = new NewsSteps();
     AboutSteps AboutSteps = new AboutSteps();
     CreateClaimSteps CreateClaimSteps = new CreateClaimSteps();
+    SingleClaimSteps SingleClaimSteps = new SingleClaimSteps();
+    AddCommentSteps AddCommentSteps = new AddCommentSteps();
 
     String currentDate = getCurrentDate();
     String currentTime = getCurrentTime();
@@ -315,5 +320,32 @@ public class PositiveTest {
         //----
     }
 
+    @Test
+    @DisplayName("Првоерка открытия экрана отдельной претензии")
+    public void singleClaimScreenTest() {
+        CommonSteps.goToScreen("Claims");
+        MainSteps.openSingleClaim();
+        SingleClaimSteps.isSingleClaimScreen();
+    }
+
+    @Test
+    @DisplayName("Првоерка открытия экрана добавление комментария к претензии")
+    public void claimAddScreenCommentTest() {
+        CommonSteps.goToScreen("Claims");
+        MainSteps.openSingleClaim();
+        SingleClaimSteps.addComment();
+        AddCommentSteps.isAddCommentScreen();
+    }
+
+    @Test
+    @DisplayName("Добавление комментария к претензии")
+    public void claimAddCommentTest() {
+        CommonSteps.goToScreen("Claims");
+        MainSteps.openSingleClaim();
+        SingleClaimSteps.addComment();
+        AddCommentSteps.isAddCommentScreen();
+        AddCommentSteps.addComment();
+        SingleClaimSteps.isSingleClaimScreen();
+    }
 }
 
