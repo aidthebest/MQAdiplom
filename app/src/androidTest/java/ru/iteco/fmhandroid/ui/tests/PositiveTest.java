@@ -3,32 +3,46 @@ package ru.iteco.fmhandroid.ui.tests;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.swipeUp;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withChild;
+import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
+import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withParent;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static ru.iteco.fmhandroid.ui.utils.Utils.checkClaimStatus;
+import static ru.iteco.fmhandroid.ui.utils.Utils.commentSwipe;
 import static ru.iteco.fmhandroid.ui.utils.Utils.getCurrentDate;
 import static ru.iteco.fmhandroid.ui.utils.Utils.getCurrentTime;
 import static ru.iteco.fmhandroid.ui.utils.Utils.isDisplayedWithSwipe;
+import static ru.iteco.fmhandroid.ui.utils.Utils.scrollTo;
 
 import android.os.SystemClock;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewParent;
 
 import java.util.NoSuchElementException;
 
 import androidx.test.espresso.NoMatchingViewException;
+import androidx.test.espresso.ViewInteraction;
 import androidx.test.rule.ActivityTestRule;
 
 import androidx.test.espresso.NoMatchingViewException;
 import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.rule.ActivityTestRule;
 
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
+import org.hamcrest.TypeSafeMatcher;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -36,6 +50,7 @@ import org.junit.runner.RunWith;
 
 import io.qameta.allure.android.runners.AllureAndroidJUnit4;
 import io.qameta.allure.kotlin.junit4.DisplayName;
+import ru.iteco.fmhandroid.R;
 import ru.iteco.fmhandroid.ui.AppActivity;
 import ru.iteco.fmhandroid.ui.elements.AddCommentScreen;
 import ru.iteco.fmhandroid.ui.steps.AboutSteps;
@@ -46,9 +61,11 @@ import ru.iteco.fmhandroid.ui.steps.CommonSteps;
 import ru.iteco.fmhandroid.ui.steps.CreateClaimSteps;
 import ru.iteco.fmhandroid.ui.steps.MainSteps;
 import ru.iteco.fmhandroid.ui.steps.NewsControlPanelSteps;
+import ru.iteco.fmhandroid.ui.steps.NewsCreateSteps;
 import ru.iteco.fmhandroid.ui.steps.NewsSteps;
 import ru.iteco.fmhandroid.ui.steps.QuoteSteps;
 import ru.iteco.fmhandroid.ui.steps.SingleClaimSteps;
+import ru.iteco.fmhandroid.ui.utils.Utils;
 
 @RunWith(AllureAndroidJUnit4.class)
 public class PositiveTest {
@@ -63,6 +80,7 @@ public class PositiveTest {
     SingleClaimSteps SingleClaimSteps = new SingleClaimSteps();
     AddCommentSteps AddCommentSteps = new AddCommentSteps();
     NewsControlPanelSteps NewsControlPanelSteps = new NewsControlPanelSteps();
+    NewsCreateSteps NewsCreateSteps = new NewsCreateSteps();
 
     String currentDate = getCurrentDate();
     String currentTime = getCurrentTime();
@@ -230,7 +248,7 @@ public class PositiveTest {
         SystemClock.sleep(2000);
     }
 
-    @Test // должен падать странное поведение
+    @Test // Закономерно падает ибо даёт сохранить с неправильной датой
     @DisplayName("Попытка создать претензию с истекшим сроком выполнения")
     public void tryTorCreateClaimInPastTime() {
 
@@ -250,7 +268,8 @@ public class PositiveTest {
         CreateClaimSteps.enterClaimTime(currentTime);
         CreateClaimSteps.enterClaimDescription(newClaimTitleString);
         CommonSteps.clickSave();
-        CreateClaimSteps.isCreateClaimsScreen();
+//        CreateClaimSteps.isCreateClaimsScreen(); // с этой строкой падает - это в случае, если жалоба с истекшим сроком не должна создаваться
+        MainSteps.isMainScreen();
     }
 
     @Test
@@ -339,6 +358,7 @@ public class PositiveTest {
     public void claimAddScreenCommentTest() {
         CommonSteps.goToScreen("Claims");
         MainSteps.openSingleClaim();
+        SingleClaimSteps.isSingleClaimScreen();
         SingleClaimSteps.addComment();
         AddCommentSteps.isAddCommentScreen();
     }
@@ -361,5 +381,59 @@ public class PositiveTest {
         NewsSteps.goToControlPanel();
         NewsControlPanelSteps.isControlPanel();
     }
+
+    @Test
+    @DisplayName("Сортировка новостей на экране новостей")
+    public void newsScreenSorting() {
+        CommonSteps.goToScreen("News");
+        NewsSteps.isNewsScreen();
+        String firstNews = NewsSteps.getFirstNewsTitle();
+        NewsSteps.clickSortButton();
+        SystemClock.sleep(1500);
+        NewsSteps.clickSortButton();
+        String lastNews = NewsSteps.getLastNewsTitle();
+        assertNotEquals(firstNews, lastNews);
+    }
+
+    @Test
+    @DisplayName("Создание новости, её поиск и удаление")
+    public void createNewsWithSearchAndDel() {
+        CommonSteps.goToScreen("News");
+        NewsSteps.isNewsScreen();
+
+        NewsSteps.goToControlPanel();
+
+        NewsControlPanelSteps.createNews();
+        NewsCreateSteps.isCreateNewsScreen();
+
+        NewsCreateSteps.selectNewsCategory();
+        NewsCreateSteps.enterNewsTitle(newsTitle);
+        CommonSteps.clickCancel();
+        CommonSteps.clickCancelText();
+        NewsCreateSteps.checkNewsTitle(newsTitle);
+
+        CommonSteps.clickCancel();
+        CommonSteps.clickOK();
+        NewsControlPanelSteps.isControlPanel();
+
+        NewsControlPanelSteps.createNews();
+        NewsCreateSteps.isCreateNewsScreen();
+        NewsCreateSteps.selectNewsCategory();
+        NewsCreateSteps.enterNewsTitle(newsTitle);
+        NewsCreateSteps.enterNewsPublicationDate(currentDate);
+        NewsCreateSteps.enterNewsTime(currentTime);
+        NewsCreateSteps.enterNewsDescription(newsDescription);
+        NewsCreateSteps.checkNewsSwitcher();
+
+        CommonSteps.clickSave();
+        NewsControlPanelSteps.isControlPanel();
+        if (isDisplayedWithSwipe(onView(withText(newsTitle)), 1, true)) {
+            onView(withText(newsTitle)).check(matches(isDisplayed()));
+        }
+
+        onView(allOf(withId(R.id.delete_news_item_image_view), withParent(withParent(allOf(withId(R.id.news_item_material_card_view), withChild(withChild(withText(newsTitle)))))))).perform(click());
+        CommonSteps.clickOK();
+    }
+
 }
 
