@@ -456,23 +456,6 @@ public class PositiveTest {
     @Test
     @DisplayName("Сортировка новостей")
     public void newsScreenFiltering() {
-        CommonSteps.goToScreen("News");
-        NewsSteps.isNewsScreen();
-
-        NewsSteps.goToControlPanel();
-        NewsControlPanelSteps.isControlPanel();
-
-        NewsControlPanelSteps.createNews();
-        NewsCreateSteps.isCreateNewsScreen();
-        NewsCreateSteps.selectNewsCategory();
-        NewsCreateSteps.enterNewsTitle(newsTitle);
-        NewsCreateSteps.enterNewsPublicationDate(currentDate);
-        NewsCreateSteps.enterNewsTime(currentTime);
-        NewsCreateSteps.enterNewsDescription(newsDescription);
-        NewsCreateSteps.checkNewsSwitcher();
-
-        CommonSteps.clickSave();
-        NewsControlPanelSteps.isControlPanel();
 
         CommonSteps.goToScreen("News");
         NewsSteps.isNewsScreen();
@@ -513,19 +496,6 @@ public class PositiveTest {
         NewsCreateSteps.clickNewsSwitcher();
         CommonSteps.clickSave();
 
-        NewsSteps.openFilter();
-        NewsFilterScreenSteps.enterPublishDateStart(currentDate);
-        NewsFilterScreenSteps.enterPublishDateEnd(currentDate);
-        NewsFilterScreenSteps.checkCheckboxActive(true);
-        NewsFilterScreenSteps.clickCheckboxNotActive();
-        NewsFilterScreenSteps.checkCheckboxNotActive(false);
-        NewsFilterScreenSteps.clickFilter();
-
-        NewsControlPanelSteps.checkFirstPublicationDateActive(currentDate);
-        NewsControlPanelSteps.checkNewsStatusActive();
-
-        NewsControlPanelSteps.clickDeleteNews();
-        CommonSteps.clickOK();
     }
 }
 

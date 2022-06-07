@@ -47,6 +47,11 @@ public class NewsSteps {
 
     public void openFilter() {
         Allure.step("Открыть фильтр");
+        NewsScreen.filterButton.perform(click());
+    }
+
+    public void openFirstNews() {
+        Allure.step("Открыть фильтр");
         NewsScreen.firstNews.perform(click());
     }
 
