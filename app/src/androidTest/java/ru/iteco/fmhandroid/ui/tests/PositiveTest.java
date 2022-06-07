@@ -435,5 +435,95 @@ public class PositiveTest {
         CommonSteps.clickOK();
     }
 
+    @Test
+    @DisplayName("Переход на страницу Новости кликом по кнопке All News")
+    public void allNewsMainButtonCheck() {
+        MainSteps.isMainScreen();
+        MainSteps.openAllNews();
+        NewsSteps.isNewsScreen();
+    }
+
+    @Test
+    @DisplayName("Переход на страницу Претензии кликом по кнопке All Claims")
+    public void allClaimsMainButtonCheck() {
+        MainSteps.isMainScreen();
+        MainSteps.openAllClaims();
+        ClaimsSteps.isClaimsScreen();
+    }
+
+    @Test
+    @DisplayName("Сортировка новостей")
+    public void newsScreenFiltering() {
+        CommonSteps.goToScreen("News");
+        NewsSteps.isNewsScreen();
+
+        NewsSteps.goToControlPanel();
+        NewsControlPanelSteps.isControlPanel();
+
+        NewsControlPanelSteps.createNews();
+        NewsCreateSteps.isCreateNewsScreen();
+        NewsCreateSteps.selectNewsCategory();
+        NewsCreateSteps.enterNewsTitle(newsTitleString);
+        NewsCreateSteps.enterNewsPublicationDate(newsPublicationDate);
+        NewsCreateSteps.enterNewsTime(newsTime);
+        NewsCreateSteps.enterNewsDescription(newsDescriptionString);
+        NewsCreateSteps.checkNewsSwitcher();
+
+        CommonSteps.clickSave();
+        NewsControlPanelSteps.isControlPanel();
+
+        CommonSteps.goToScreen("News");
+        NewsSteps.isNewsScreen();
+
+        NewsSteps.openFilter();
+        NewsFilterSteps.enterPublishDateStart(newsPublicationDate);
+        NewsFilterSteps.enterPublishDateEnd(newsPublicationDate);
+        NewsFilterSteps.clickFilter();
+
+        NewsSteps.checkFirstNewsDate(newsPublicationDate);
+
+        NewsSteps.goToControlPanel();
+        NewsControlPanelSteps.isControlPanel();
+
+        NewsSteps.openFilter();
+        NewsFilterSteps.enterPublishDateStart(newsPublicationDate);
+        NewsFilterSteps.enterPublishDateEnd(newsPublicationDate);
+        NewsFilterSteps.clickFilter();
+
+        NewsControlPanelSteps.checkFirstPublicationDate(newsPublicationDate);
+
+        NewsControlPanelSteps.clickEditNews();
+        NewsCreateSteps.clickNewsSwitcher();
+        CommonSteps.clickSave();
+
+        NewsSteps.openFilter();
+        NewsFilterSteps.enterPublishDateStart(newsPublicationDate);
+        NewsFilterSteps.enterPublishDateEnd(newsPublicationDate);
+        NewsFilterSteps.clickCheckboxActive();
+        NewsFilterSteps.checkCheckboxActive(false);
+        NewsFilterSteps.checkCheckboxNotActive(true);
+        NewsFilterSteps.clickFilter();
+
+        NewsControlPanelSteps.checkFirstPublicationDateNotActive(newsPublicationDate);
+        NewsControlPanelSteps.checkNewsStatus();
+
+        NewsControlPanelSteps.checkNewsStatusNotActive();
+        NewsCreateSteps.clickNewsSwitcher();
+        CommonSteps.clickSave();
+
+        NewsSteps.openFilter();
+        NewsFilterSteps.enterPublishDateStart(newsPublicationDate);
+        NewsFilterSteps.enterPublishDateEnd(newsPublicationDate);
+        NewsFilterSteps.checkCheckboxActive(true);
+        NewsFilterSteps.clickCheckboxNotActive();
+        NewsFilterSteps.checkCheckboxNotActive(false);
+        NewsFilterSteps.clickFilter();
+
+        NewsControlPanelSteps.checkFirstPublicationDateActive(newsPublicationDate);
+        NewsControlPanelSteps.checkNewsStatusActive();
+
+        NewsControlPanelSteps.clickDeleteNews();
+        CommonSteps.clickOK();
+    }
 }
 
