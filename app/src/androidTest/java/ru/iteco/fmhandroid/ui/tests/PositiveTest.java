@@ -62,6 +62,7 @@ import ru.iteco.fmhandroid.ui.steps.CreateClaimSteps;
 import ru.iteco.fmhandroid.ui.steps.MainSteps;
 import ru.iteco.fmhandroid.ui.steps.NewsControlPanelSteps;
 import ru.iteco.fmhandroid.ui.steps.NewsCreateSteps;
+import ru.iteco.fmhandroid.ui.steps.NewsFilterScreenSteps;
 import ru.iteco.fmhandroid.ui.steps.NewsSteps;
 import ru.iteco.fmhandroid.ui.steps.QuoteSteps;
 import ru.iteco.fmhandroid.ui.steps.SingleClaimSteps;
@@ -81,6 +82,7 @@ public class PositiveTest {
     AddCommentSteps AddCommentSteps = new AddCommentSteps();
     NewsControlPanelSteps NewsControlPanelSteps = new NewsControlPanelSteps();
     NewsCreateSteps NewsCreateSteps = new NewsCreateSteps();
+    NewsFilterScreenSteps NewsFilterScreenSteps = new NewsFilterScreenSteps();
 
     String currentDate = getCurrentDate();
     String currentTime = getCurrentTime();
@@ -463,10 +465,10 @@ public class PositiveTest {
         NewsControlPanelSteps.createNews();
         NewsCreateSteps.isCreateNewsScreen();
         NewsCreateSteps.selectNewsCategory();
-        NewsCreateSteps.enterNewsTitle(newsTitleString);
-        NewsCreateSteps.enterNewsPublicationDate(newsPublicationDate);
-        NewsCreateSteps.enterNewsTime(newsTime);
-        NewsCreateSteps.enterNewsDescription(newsDescriptionString);
+        NewsCreateSteps.enterNewsTitle(newsTitle);
+        NewsCreateSteps.enterNewsPublicationDate(currentDate);
+        NewsCreateSteps.enterNewsTime(currentTime);
+        NewsCreateSteps.enterNewsDescription(newsDescription);
         NewsCreateSteps.checkNewsSwitcher();
 
         CommonSteps.clickSave();
@@ -476,35 +478,35 @@ public class PositiveTest {
         NewsSteps.isNewsScreen();
 
         NewsSteps.openFilter();
-        NewsFilterSteps.enterPublishDateStart(newsPublicationDate);
-        NewsFilterSteps.enterPublishDateEnd(newsPublicationDate);
-        NewsFilterSteps.clickFilter();
+        NewsFilterScreenSteps.enterPublishDateStart(currentDate);
+        NewsFilterScreenSteps.enterPublishDateEnd(currentDate);
+        NewsFilterScreenSteps.clickFilter();
 
-        NewsSteps.checkFirstNewsDate(newsPublicationDate);
+        NewsSteps.checkFirstNewsDate(currentDate);
 
         NewsSteps.goToControlPanel();
         NewsControlPanelSteps.isControlPanel();
 
         NewsSteps.openFilter();
-        NewsFilterSteps.enterPublishDateStart(newsPublicationDate);
-        NewsFilterSteps.enterPublishDateEnd(newsPublicationDate);
-        NewsFilterSteps.clickFilter();
+        NewsFilterScreenSteps.enterPublishDateStart(currentDate);
+        NewsFilterScreenSteps.enterPublishDateEnd(currentDate);
+        NewsFilterScreenSteps.clickFilter();
 
-        NewsControlPanelSteps.checkFirstPublicationDate(newsPublicationDate);
+        NewsControlPanelSteps.checkFirstPublicationDate(currentDate);
 
         NewsControlPanelSteps.clickEditNews();
         NewsCreateSteps.clickNewsSwitcher();
         CommonSteps.clickSave();
 
         NewsSteps.openFilter();
-        NewsFilterSteps.enterPublishDateStart(newsPublicationDate);
-        NewsFilterSteps.enterPublishDateEnd(newsPublicationDate);
-        NewsFilterSteps.clickCheckboxActive();
-        NewsFilterSteps.checkCheckboxActive(false);
-        NewsFilterSteps.checkCheckboxNotActive(true);
-        NewsFilterSteps.clickFilter();
+        NewsFilterScreenSteps.enterPublishDateStart(currentDate);
+        NewsFilterScreenSteps.enterPublishDateEnd(currentDate);
+        NewsFilterScreenSteps.clickCheckboxActive();
+        NewsFilterScreenSteps.checkCheckboxActive(false);
+        NewsFilterScreenSteps.checkCheckboxNotActive(true);
+        NewsFilterScreenSteps.clickFilter();
 
-        NewsControlPanelSteps.checkFirstPublicationDateNotActive(newsPublicationDate);
+        NewsControlPanelSteps.checkFirstPublicationDateNotActive(currentDate);
         NewsControlPanelSteps.checkNewsStatus();
 
         NewsControlPanelSteps.checkNewsStatusNotActive();
@@ -512,14 +514,14 @@ public class PositiveTest {
         CommonSteps.clickSave();
 
         NewsSteps.openFilter();
-        NewsFilterSteps.enterPublishDateStart(newsPublicationDate);
-        NewsFilterSteps.enterPublishDateEnd(newsPublicationDate);
-        NewsFilterSteps.checkCheckboxActive(true);
-        NewsFilterSteps.clickCheckboxNotActive();
-        NewsFilterSteps.checkCheckboxNotActive(false);
-        NewsFilterSteps.clickFilter();
+        NewsFilterScreenSteps.enterPublishDateStart(currentDate);
+        NewsFilterScreenSteps.enterPublishDateEnd(currentDate);
+        NewsFilterScreenSteps.checkCheckboxActive(true);
+        NewsFilterScreenSteps.clickCheckboxNotActive();
+        NewsFilterScreenSteps.checkCheckboxNotActive(false);
+        NewsFilterScreenSteps.clickFilter();
 
-        NewsControlPanelSteps.checkFirstPublicationDateActive(newsPublicationDate);
+        NewsControlPanelSteps.checkFirstPublicationDateActive(currentDate);
         NewsControlPanelSteps.checkNewsStatusActive();
 
         NewsControlPanelSteps.clickDeleteNews();
