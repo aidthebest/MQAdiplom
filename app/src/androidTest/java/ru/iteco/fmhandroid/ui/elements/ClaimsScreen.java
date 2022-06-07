@@ -4,6 +4,9 @@ import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
+import static org.hamcrest.Matchers.allOf;
+import static ru.iteco.fmhandroid.ui.utils.Utils.withIndex;
+
 import androidx.test.espresso.ViewInteraction;
 
 import ru.iteco.fmhandroid.R;
@@ -19,4 +22,5 @@ public class ClaimsScreen {
     public ViewInteraction executed = onView((withId(R.id.item_filter_executed)));
     public ViewInteraction cancelled = onView((withId(R.id.item_filter_cancelled)));
     public ViewInteraction addNewClaimButton = onView((withId(R.id.add_new_claim_material_button)));
+    public ViewInteraction firstClaimExecutorName = onView(allOf(withIndex(withId(R.id.executor_name_material_text_view), 0)));
 }

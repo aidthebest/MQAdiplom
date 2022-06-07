@@ -53,9 +53,11 @@ import io.qameta.allure.kotlin.junit4.DisplayName;
 import ru.iteco.fmhandroid.R;
 import ru.iteco.fmhandroid.ui.AppActivity;
 import ru.iteco.fmhandroid.ui.elements.AddCommentScreen;
+import ru.iteco.fmhandroid.ui.elements.ClaimEditScreen;
 import ru.iteco.fmhandroid.ui.steps.AboutSteps;
 import ru.iteco.fmhandroid.ui.steps.AddCommentSteps;
 import ru.iteco.fmhandroid.ui.steps.AuthorizationSteps;
+import ru.iteco.fmhandroid.ui.steps.ClaimEditScreenSteps;
 import ru.iteco.fmhandroid.ui.steps.ClaimsSteps;
 import ru.iteco.fmhandroid.ui.steps.CommonSteps;
 import ru.iteco.fmhandroid.ui.steps.CreateClaimSteps;
@@ -83,6 +85,7 @@ public class PositiveTest {
     NewsControlPanelSteps NewsControlPanelSteps = new NewsControlPanelSteps();
     NewsCreateSteps NewsCreateSteps = new NewsCreateSteps();
     NewsFilterScreenSteps NewsFilterScreenSteps = new NewsFilterScreenSteps();
+    ClaimEditScreenSteps ClaimEditScreenSteps = new ClaimEditScreenSteps();
 
     String currentDate = getCurrentDate();
     String currentTime = getCurrentTime();
@@ -348,7 +351,7 @@ public class PositiveTest {
     }
 
     @Test
-    @DisplayName("Првоерка открытия экрана отдельной претензии")
+    @DisplayName("Проверка открытия экрана отдельной претензии")
     public void singleClaimScreenTest() {
         CommonSteps.goToScreen("Claims");
         MainSteps.openSingleClaim();
@@ -356,7 +359,7 @@ public class PositiveTest {
     }
 
     @Test
-    @DisplayName("Првоерка открытия экрана добавление комментария к претензии")
+    @DisplayName("Проверка открытия экрана добавление комментария к претензии")
     public void claimAddScreenCommentTest() {
         CommonSteps.goToScreen("Claims");
         MainSteps.openSingleClaim();
@@ -497,5 +500,6 @@ public class PositiveTest {
         CommonSteps.clickSave();
 
     }
+
 }
 

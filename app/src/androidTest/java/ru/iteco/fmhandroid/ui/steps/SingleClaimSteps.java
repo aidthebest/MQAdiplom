@@ -31,11 +31,33 @@ public class SingleClaimSteps {
         SingleClaimScreen.planDateLabel.check(matches(isDisplayed()));
         SingleClaimScreen.authorLabel.check(matches(isDisplayed()));
         SingleClaimScreen.createdLabel.check(matches(isDisplayed()));
+        SingleClaimScreen.statusBar.check(matches(isDisplayed()));
 
     }
 
     public void addComment() {
         Allure.step("Клин по кнопке Добавить комментарий");
         SingleClaimScreen.addCommentButton.perform(scrollTo()).perform(click());
+    }
+
+
+    public void addCommentButtonClick() {
+        Allure.step("Клик по кнопке Добавить комментарий");
+        SingleClaimScreen.addCommentButton.perform(scrollTo()).perform(click());
+    }
+
+    public void backButtonClick() {
+        Allure.step("Клик по кнопке Назад");
+        SingleClaimScreen.backButton.perform(scrollTo()).perform(click());
+    }
+
+    public void statusProcessButtonClick() {
+        Allure.step("Клик по кнопке Статус");
+        SingleClaimScreen.statusProcessButton.perform(scrollTo()).perform(click());
+    }
+
+    public void editStatusClick() {
+        Allure.step("Клик по кнопке Редактировать статус");
+        SingleClaimScreen.editProcessButton.perform(scrollTo()).perform(click());
     }
 }

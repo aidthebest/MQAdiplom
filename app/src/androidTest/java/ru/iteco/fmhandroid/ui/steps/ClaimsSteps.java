@@ -100,4 +100,10 @@ public class ClaimsSteps {
         ClaimsScreen.addNewClaimButton.perform(click());
         SystemClock.sleep(1500);
     }
+
+    public void openFirstClaim() {
+        Allure.step("Кликнуть на первую претензаю");
+        ClaimsScreen.firstClaimExecutorName.perform(click());
+        SystemClock.sleep(1000);
+    }
 }
