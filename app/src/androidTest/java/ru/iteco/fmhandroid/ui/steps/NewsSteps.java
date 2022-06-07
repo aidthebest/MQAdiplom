@@ -51,7 +51,7 @@ public class NewsSteps {
     }
 
     public void openFirstNews() {
-        Allure.step("Открыть фильтр");
+        Allure.step("Открыть первую новость");
         NewsScreen.firstNews.perform(click());
     }
 

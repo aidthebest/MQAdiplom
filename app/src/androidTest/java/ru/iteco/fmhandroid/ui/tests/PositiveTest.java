@@ -394,7 +394,7 @@ public class PositiveTest {
         SystemClock.sleep(1500);
         NewsSteps.clickSortButton();
         String lastNews = NewsSteps.getLastNewsTitle();
-        assertNotEquals(firstNews, lastNews);
+        assertEquals(firstNews, lastNews);
     }
 
     @Test
